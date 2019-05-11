@@ -316,6 +316,7 @@
      provider: pypi
      server: https://testpypi.python.org/pypi
      on:
+       all_branches: true
        tags: true
      user: <your account>
    ```
