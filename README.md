@@ -230,3 +230,13 @@
         args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
         ...
    ```
+4. 再新增一項 TestCase 至 `tests/test_simplehttp.py`。
+   ```python
+   class PostJsonTest(unittest.TestCase):
+       ...
+       def test_url_with_data_in_chinese(self):
+            data = {'isbn': '9789863479116', 'title': u'流暢的 Python'}
+            r = simplehttp.post_json('https://httpbin.org/post', data=data)
+            assert r['json'] == data
+   ```
+

@@ -37,5 +37,15 @@ class PostJsonTest(unittest.TestCase):
         assert r['args'] == params
         assert r['json'] == data
 
+    def test_url_with_params_in_chinese(self):
+        params = {'name': u'常見問題 Q&A'}
+        r = simplehttp.get_json('https://httpbin.org/get', params=params)
+        assert r['args'] == params
+
+    def test_url_with_data_in_chinese(self):
+        data = {'isbn': '9789863479116', 'title': u'流暢的 Python'}
+        r = simplehttp.post_json('https://httpbin.org/post', data=data)
+        assert r['json'] == data
+
 if __name__ == '__main__':
     unittest.main()
