@@ -119,3 +119,43 @@
        info = json.loads(res.read())
        return info
    ```
+3. 撰寫單元測試 unittest ，方便日後程式碼的維護開發。
+
+   1. 在專案資料夾下新增檔案。
+
+      ```
+      tests/
+      ├── __init__.py # 此處需要 import simplehttp
+      └── test_simplehttp.py
+      ```
+   2. 編輯 `test_simplehttp.py` 。
+      ```python
+      import unittest
+      import sys
+      sys.path.append('..')
+      import simplehttp
+
+      class GetJsonTest(unittest.TestCase):
+          def test_url(self):
+              r = simplehttp.get_json('https://httpbin.org/get')
+              self.assertEqual(r['args'], {})
+
+          def test_url_with_params(self):
+              params = {'name': 'Celine'}
+              r = simplehttp.get_json('https://httpbin.org/get?debug=true')
+              assert r['args'] == {'debug': 'true'}
+
+          def test_url_with_other_params(self):
+              params = {'name': 'Celine'}
+              r = simplehttp.get_json('https://httpbin.org/get?debug=true', params=params)
+              assert r['args'] == {'debug': 'true', 'name': 'Celine'}
+
+      if __name__ == '__main__':
+          unittest.main()
+      ```
+   3. 此時可以執行測試查看結果，上方為直接執行該測試檔，下方為自動找出某個資料夾底下所有的測試（預設會找 `test*.py` ），因此在命名測試檔時，前方加上 test_ 會方便分類。
+      ```cmd
+      $ python tests/test_simplehttp.py
+      $ python -m unittest discover
+      ```
+      最後出現 OK 即為單元測試成功。
