@@ -1,4 +1,4 @@
-# 由淺入深 Python Packaging
+# [由淺入深 Python Packaging](https://hackmd.io/s/H1zCrzg3N)
 
 ## 建置步驟
 1. 建立並啟動虛擬環境。
@@ -29,7 +29,7 @@
    `simplehttp/` 套件的部分說明，一個 python 檔案表是一個模組，而一個包含 `__init__` 的資料夾就可以視為一個套件，外部的使用者可以透過 `import simplehttp` 來使用，若 `simplehttp/` 下還有其他模組，如：
    ```
    simplehttp/
-   ├── __init__.py # 此處需要 import mod
+   ├── __init__.py
    └── mod.py
    ```
    則可以透過 `simplehttp.mod` 來呼叫。
@@ -131,6 +131,7 @@
 2. 編輯 `test_simplehttp.py` 。
    ```python
    import unittest
+   import sys
    sys.path.append('..')
    import simplehttp
 
@@ -151,9 +152,8 @@
    if __name__ == '__main__':
        unittest.main()
    ```
-3. 此時可以執行測試查看結果，上方為直接執行該測試檔，下方為自動找出某個資料夾底下所有的測試（預設會找 `test*.py` ），因此在命名測試檔時，前方加上 test_ 會方便分類。
+3. 此時可以執行測試查看結果，自動找出某個資料夾底下所有的測試（預設會找 `test*.py` ）。
    ```cmd
-   $ python tests/test_simplehttp.py
    $ python -m unittest discover
    ```
    最後出現 OK 即為單元測試成功。
