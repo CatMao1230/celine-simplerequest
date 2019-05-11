@@ -8,7 +8,7 @@ script: python -m unittest discover
 deploy:
   provider: pypi
   server: https://testpypi.python.org/pypi
-  true:
+  on:
     python: 2.7
     tags: true
     branch: master

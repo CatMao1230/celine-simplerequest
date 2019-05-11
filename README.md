@@ -297,3 +297,36 @@
            simplehttp.get_json('https://httpbin.org/status/400')
            self.assertEqual(sys.last_value.status_code, 400)
    ```
+
+## Travis CI
+每次更新程式碼時，都要先本地測試，之後提交到 github ，然後再打包發佈到 PyPI ，過程相當繁瑣，而 github + travis-ci 可以解決這個問題，建構一個自動部署環境。
+
+1. 先進入 [travis-ci](https://travis-ci.com/) 網站，可以直接以 Github 登入，並至 [travis-ci.com/profile](travis-ci.com/profile) 激活 repo 。
+2. 在專案資料夾下，新增 `.travis.yml` 檔，參考 [Building a Python Project](https://docs.travis-ci.com/user/languages/python/) 與 [PyPI deployment](https://docs.travis-ci.com/user/deployment/pypi/)。
+
+   ```
+   language: python
+   python:
+   - '2.7'
+   - '3.6'
+   - '3.7'
+   dist: xenial
+   script: python -m unittest discover
+   deploy:
+     provider: pypi
+     server: https://testpypi.python.org/pypi
+     on:
+       python: 2.7
+       tags: true
+       branch: master
+     user: <your account>
+   ```
+   其中 `on:` 內的句子表示：在 2.7 版本、發佈新的版本、分支在 master 時才會打包發布。
+3. 上方的 deploy 少了 password 的原因是：若直接將密碼打在檔案中十分危險，因此需要用 travis-encrypt 加密。
+   ```cmd
+   $ pip install travis-encrypt
+   $ travis-encrypt --deploy gusibi python-weixin .travis.yml
+   Password: 輸入密碼
+   ```
+   此時在看 `.travis.yml` ，會發現多出了加密的密碼。
+4. 之後 push 到 github 時，都可以進入 Travis CI 網站查看建置狀況與結果。
