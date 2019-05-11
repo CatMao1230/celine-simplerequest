@@ -1,3 +1,5 @@
+#/usr/bin/env python
+# -*- coding: UTF-8 -*-
 import unittest
 import sys
 sys.path.append('..')
@@ -18,6 +20,11 @@ class GetJsonTest(unittest.TestCase):
         r = simplehttp.get_json('https://httpbin.org/get?debug=true', params=params)
         assert r['args'] == {'debug': 'true', 'name': 'Celine'}
 
+    def test_url_with_params_in_chinese(self):
+        params = {'name': u'常見問題 Q&A'}
+        r = simplehttp.get_json('https://httpbin.org/get', params=params)
+        assert r['args'] == params
+
 class PostJsonTest(unittest.TestCase):
     def test_url_with_params(self):
         params = {'debug': 'true'}
@@ -28,7 +35,7 @@ class PostJsonTest(unittest.TestCase):
         data = {'isbn': '9789863479116', 'name': 'Celine'}
         r = simplehttp.post_json('https://httpbin.org/post', params=params, data=data)
         assert r['args'] == params
-        assert r['data'] == data
+        assert r['json'] == data
 
 if __name__ == '__main__':
     unittest.main()

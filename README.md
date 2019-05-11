@@ -95,7 +95,7 @@
    >>> r = simplehttp.get_json('https://httpbin.org/get?debug=true', params=params)
    >>> assert r['args'] == {'debug': 'true', 'name': 'Celine'}
    ```
-2. 編輯 `__init__.py` ，上面 import 的部分，因為 urllib 在 python 2 和 3 之間的使用方法不同，所以需要分開 import 。
+2. 編輯 `__init__.py` ，上面 import 的部分，因為 urllib 在 Python2 和 3 之間的使用方法不同，所以需要分開 import 。
    ```python
    #/usr/bin/env python
    # -*- coding: UTF-8 -*-
@@ -184,6 +184,7 @@
        info = json.loads(res.read())
        return info
    ```
+   其中 `encode('utf-8')` 可以參考[此文章](https://blog.csdn.net/IMW_MG/article/details/78555375)， Python3 中不能提交 str 類型，需為 type 類型。
 3. 修改 `tests/test_simplehttp.py` ，新增單元測試。
    ```python
    class PostJsonTest(unittest.TestCase):
@@ -196,5 +197,31 @@
            data = {'isbn': '9789863479116', 'name': 'Celine'}
            r = simplehttp.post_json('https://httpbin.org/post', params=params, data=data)
            assert r['args'] == params
-           assert r['data'] == data
+           assert r['json'] == data
    ```
+
+### 解決中文
+1. 有另外一項需求是參數包含中文。
+
+   ```python
+   >>> params = {'name': u'常見問題 Q&A'}
+   >>> r = simplehttp.get_json('https://httpbin.org/get', params=params)
+   >>> assert r['args'] == params
+   ```
+2. 先新增這項 TestCase 至 `tests/test_simplehttp.py`。
+   ```python
+   #/usr/bin/env python
+   # -*- coding: UTF-8 -*-
+   ...
+   class GetJsonTest(unittest.TestCase):
+       ...
+       def test_url_with_params_in_chinese(self):
+           params = {'name': u'常見問題 Q&A'}
+           r = simplehttp.get_json('https://httpbin.org/get', params=params)
+           assert r['args'] == params
+   ```
+   此時執行 python2.7 會出現錯誤。
+   ```error
+   UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-3: ordinal not in range(128)
+   ```
+
