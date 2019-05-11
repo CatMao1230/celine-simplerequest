@@ -315,6 +315,8 @@
    deploy:
      provider: pypi
      server: https://testpypi.python.org/pypi
+     distributions: 'sdist bdist_wheel'
+     skip_existing: true
      on:
        all_branches: true
        tags: true

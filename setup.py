@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='celine-simplerequest',
-    version='1.0.2',
+    version='1.0.3',
     author='Celine Yeh',
     author_email='cat841230@gmail.com',
     description='A simple request.',
