@@ -64,7 +64,6 @@
       ```
    2. 安裝成功後，測試套件是否可以運作。
       ```python
-      $ python
       >>> import simplehttp
       >>> ...
       ```
@@ -84,10 +83,10 @@
       $ python setup.py sdist bdist_wheel upload -r testpypi
       ```
 ## 套件內容撰寫
+### get_json()
 1. 這裡要求套件只能使用 Python Standard Library，不能調用其他第三方套件。第一項要求的功能是：
 
    ```python
-   $ python
    >>> import simplehttp
    >>> r = simplehttp.get_json('https://httpbin.org/get')
    >>> assert r['args'] == {}
@@ -119,43 +118,69 @@
        info = json.loads(res.read())
        return info
    ```
-3. 撰寫單元測試 unittest ，方便日後程式碼的維護開發。
+### Unittest
+撰寫單元測試 unittest ，方便日後程式碼的維護開發。
 
-   1. 在專案資料夾下新增檔案。
+1. 在專案資料夾下新增檔案。
 
-      ```
-      tests/
-      ├── __init__.py # 此處需要 import simplehttp
-      └── test_simplehttp.py
-      ```
-   2. 編輯 `test_simplehttp.py` 。
-      ```python
-      import unittest
-      import sys
-      sys.path.append('..')
-      import simplehttp
+   ```
+   tests/
+   ├── __init__.py # 此處需要 import simplehttp
+   └── test_simplehttp.py
+   ```
+2. 編輯 `test_simplehttp.py` 。
+   ```python
+   import unittest
+   import sys
+   sys.path.append('..')
+   import simplehttp
 
-      class GetJsonTest(unittest.TestCase):
-          def test_url(self):
-              r = simplehttp.get_json('https://httpbin.org/get')
-              self.assertEqual(r['args'], {})
+   class GetJsonTest(unittest.TestCase):
+       def test_url(self):
+       r = simplehttp.get_json('https://httpbin.org/get')
+       self.assertEqual(r['args'], {})
 
-          def test_url_with_params(self):
-              params = {'name': 'Celine'}
-              r = simplehttp.get_json('https://httpbin.org/get?debug=true')
-              assert r['args'] == {'debug': 'true'}
+       def test_url_with_params(self):
+           params = {'name': 'Celine'}
+           r =   simplehttp.get_json('https://httpbin.org/get?debug=true')
+           assert r['args'] == {'debug': 'true'}
 
-          def test_url_with_other_params(self):
-              params = {'name': 'Celine'}
-              r = simplehttp.get_json('https://httpbin.org/get?debug=true', params=params)
-              assert r['args'] == {'debug': 'true', 'name': 'Celine'}
+       def test_url_with_other_params(self):
+           params = {'name': 'Celine'}
+           r = simplehttp.get_json('https://httpbin.org/get?debug=true', params=params)
+           assert r['args'] == {'debug': 'true', 'name': 'Celine'}
 
-      if __name__ == '__main__':
-          unittest.main()
-      ```
-   3. 此時可以執行測試查看結果，上方為直接執行該測試檔，下方為自動找出某個資料夾底下所有的測試（預設會找 `test*.py` ），因此在命名測試檔時，前方加上 test_ 會方便分類。
-      ```cmd
-      $ python tests/test_simplehttp.py
-      $ python -m unittest discover
-      ```
-      最後出現 OK 即為單元測試成功。
+   if __name__ == '__main__':
+       unittest.main()
+   ```
+3. 此時可以執行測試查看結果，上方為直接執行該測試檔，下方為自動找出某個資料夾底下所有的測試（預設會找 `test*.py` ），因此在命名測試檔時，前方加上 test_ 會方便分類。
+   ```cmd
+   $ python tests/test_simplehttp.py
+   $ python -m unittest discover
+   ```
+   最後出現 OK 即為單元測試成功。
+   
+### post_json()
+1. 第二項功能需求：
+   ```python
+   >>> params = {'debug': 'true'}
+   >>> data = {'isbn': '9789863479116', 'name': 'Celine'}
+   >>> r = simplehttp.post_json('https://httpbin.org/post', params=params, data=data)
+   >>> assert r['args'] == params
+   >>> assert r['json'] == data
+   ```
+3. 修改 `simplehttp/__init__.py` ，新增函式 post_json() 。
+
+   ```python
+   def post_json(url, **args):
+       if args.setdefault('params', {}):
+           url += '&' if '?' in url else '?'
+           url += urllib.urlencode(args['params'])
+
+       headers = {'Content-Type': 'application/json'}
+       data = json.dumps(args.setdefault('data', {})).encode('utf-8')
+       req = urlrequest.Request(url=url, data=data, headers=headers)
+       res = urlrequest.urlopen(req)
+       info = json.loads(res.read())
+       return info
+   ```
