@@ -239,3 +239,53 @@
             r = simplehttp.post_json('https://httpbin.org/post', data=data)
             self.assertEqual(r['json'], data)
    ```
+
+### 自定義異常處理
+1. 新的功能需要顯示出自定義的異常。
+   
+   ```python
+   >>> simplehttp.get_json('https://httpbin.org/status/400')
+   Traceback (most recent call last):
+   ...
+   simplehttp.HttpError: HTTP Status Code: 400
+   
+   >>> import sys
+   >>> assert sys.last_value.status_code == 400
+   ```
+2. 可以先看這兩篇文章：[自訂例外](https://openhome.cc/Gossip/Python/UserDefinedException.html)、[例外兼容 Python2 與 Python3 的寫法](https://mozillazg.com/2016/08/python-the-right-way-to-catch-exception-then-reraise-another-exception.html#hidpython-2-python-3)。
+3. 上面 `simplehttp.HttpError: HTTP Status Code: 400` 這段可以拆成三個部分：
+   `[package name].[exception class]: [exception str]`。
+
+4. 修改 `simplehttp/__init__.py` ，再 import 下方輸入程式碼，另外再新增一個 Class 繼承 Exception 。
+   上半段的 if else 函式是[例外兼容 Python2 與 Python3 的寫法](https://mozillazg.com/2016/08/python-the-right-way-to-catch-exception-then-reraise-another-exception.html#hidpython-2-python-3)。
+   ```python
+   if sys.version_info[0] == 3:
+       def reraise(tp, value, tb=None):
+           if value.__traceback__ is not tb:
+               raise value.with_traceback(tb)
+           else:
+               raise value
+   else:
+       exec('''def reraise(tp, value, tb=None):
+           raise tp, value, tb
+       ''')
+
+   class HttpError(Exception):
+       def __init__(self, code):
+           self.code = code
+
+       def __str__(self):
+           return 'HTTP Status Code: %s' % self.code
+   ```
+5. 修改函式，發生錯誤時呼叫異常。
+   ```python
+   def get_json(url, **args):
+       ...
+       req = urlrequest.Request(url)
+       try:
+           res = urlrequest.urlopen(req)
+           info = json.loads(res.read())
+       except urlrequest.HTTPError as e:
+           raise
+       return info
+   ```

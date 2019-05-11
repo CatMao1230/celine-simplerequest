@@ -1,5 +1,6 @@
 #/usr/bin/env python
 # -*- coding: UTF-8 -*-
+import sys
 import json
 try:
     import urllib.parse as urllib
@@ -10,14 +11,35 @@ try:
 except ImportError:
     import urllib2 as urlrequest
 
+if sys.version_info[0] == 3:
+    def reraise(tp, value, tb=None):
+        if value.__traceback__ is not tb:
+            raise value.with_traceback(tb)
+        else:
+            raise value
+else:
+    exec('''def reraise(tp, value, tb=None):
+        raise tp, value, tb
+    ''')
+
+class HttpError(Exception):
+    def __init__(self, code):
+        self.code = code
+
+    def __str__(self):
+        return 'HTTP Status Code: %s' % self.code
+
 def get_json(url, **args):
     if args.setdefault('params', {}):
         args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
         url += '&' if '?' in url else '?'
         url += urllib.urlencode(args['params'])
     req = urlrequest.Request(url)
-    res = urlrequest.urlopen(req)
-    info = json.loads(res.read())
+    try:
+        res = urlrequest.urlopen(req)
+        info = json.loads(res.read())
+    except urlrequest.HTTPError as err:
+        reraise(HttpError, HttpError(err.code), sys.exc_info()[2])
     return info
 
 def post_json(url, **args):
@@ -29,6 +51,9 @@ def post_json(url, **args):
     headers = {'Content-Type': 'application/json'}
     data = json.dumps(args.setdefault('data', {})).encode('utf-8')
     req = urlrequest.Request(url=url, data=data, headers=headers)
-    res = urlrequest.urlopen(req)
-    info = json.loads(res.read())
+    try:
+        res = urlrequest.urlopen(req)
+        info = json.loads(res.read())
+    except urlrequest.HTTPError as err:
+        reraise(HttpError, HttpError(err.code), sys.exc_info()[2])
     return info
