@@ -9,9 +9,7 @@ deploy:
   provider: pypi
   server: https://testpypi.python.org/pypi
   on:
-    python: 2.7
     tags: true
-    branch: master
   user: cat841230
   password:
     secure: jXUoy2Y4BXbRsTtZAHk3uzIBkM6DyN5qN3icXD823peMHjLRibeQTG1rvtiIRwEdEcB61YVCj2Dm8Xtskyz+7m+fvQmPIn+xPtSwoxdTM+iLKFgVAL1KV310Qpbi/5SNz6cNLRgF5eK8EKP4lCYkhj8ttSWEAK0y6MzmIX0XMkVYl8xrk8F0xXGOFcMlXv/ZeskGE4GC69ZP55WSaC5cXfC3bNcRQUyXz5McKUw9rOvA9wD7NEOUVMcNqqHPfnPyMqZOOrD4VIiaJ02mMaJ9Px8MkHhEfHCehC4X19eniIZc4cc0MhEW9Y+/ThveMLS1cMAvs2CU+IZK0JstgiJ4IH13thRd90oTMjIj4BwL6bN4pisgXp3wqbB1AUqXxEafCb/sQ/JpKLlG+q3usjQKNiktmQYPEnmt5sKVgaQNmTlPASfY0B37bvnh4aZ/KH5qUrj2Ho+Qfx047iYaKMB3JvM3Nnojejd2jX9FpnH97G0TWJFK97pjBGWNn0Kg/MoJRzEj96TrGVfESRvikaRTMlzT+9+WrZ+Kz2yE+s13/2sIyESA2c4q/7YgIhE5cv2D1ThELA5K6tkqs/4XA2gPwdrqrfcEXhX39mjn2BiZzkDid9VFGmJGw2bXRfJAx2FSN6HUKb4rnQNzpj9vxjkEVxwEUnr/peOa0q0BP6+iDbA=

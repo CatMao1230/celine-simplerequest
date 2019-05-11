@@ -316,12 +316,10 @@
      provider: pypi
      server: https://testpypi.python.org/pypi
      on:
-       python: 2.7
        tags: true
-       branch: master
      user: <your account>
    ```
-   其中 `on:` 內的句子表示：在 2.7 版本、發佈新的版本、分支在 master 時才會打包發布。
+   其中 `on:` 內的句子表示：在發佈新的版本才會打包發布。
 3. 上方的 deploy 少了 password 的原因是：若直接將密碼打在檔案中十分危險，因此需要用 travis-encrypt 加密。
    ```cmd
    $ pip install travis-encrypt
