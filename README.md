@@ -184,3 +184,17 @@
        info = json.loads(res.read())
        return info
    ```
+3. 修改 `tests/test_simplehttp.py` ，新增單元測試。
+   ```python
+   class PostJsonTest(unittest.TestCase):
+       def test_url_with_params(self):
+           params = {'debug': 'true'}
+           r = simplehttp.post_json('https://httpbin.org/post', params=params)
+           assert r['args'] == params
+       def test_url_with_params_and_data(self):
+           params = {'debug': 'true'}
+           data = {'isbn': '9789863479116', 'name': 'Celine'}
+           r = simplehttp.post_json('https://httpbin.org/post', params=params, data=data)
+           assert r['args'] == params
+           assert r['data'] == data
+   ```
