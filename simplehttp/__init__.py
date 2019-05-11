@@ -12,6 +12,7 @@ except ImportError:
 
 def get_json(url, **args):
     if args.setdefault('params', {}):
+        args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
         url += '&' if '?' in url else '?'
         url += urllib.urlencode(args['params'])
     req = urlrequest.Request(url)
@@ -21,6 +22,7 @@ def get_json(url, **args):
 
 def post_json(url, **args):
     if args.setdefault('params', {}):
+        args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
         url += '&' if '?' in url else '?'
         url += urllib.urlencode(args['params'])
 

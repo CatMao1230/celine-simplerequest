@@ -224,4 +224,9 @@
    ```error
    UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-3: ordinal not in range(128)
    ```
-
+3. 修改 `simplehttp/__init__.py` ，get_json() 和 post_json() 都需修改，將 unicode 進行 utf-8 編碼。
+   ```python
+   if args.setdefault('params', {}):
+        args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
+        ...
+   ```
