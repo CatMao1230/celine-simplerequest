@@ -47,5 +47,10 @@ class PostJsonTest(unittest.TestCase):
         r = simplehttp.post_json('https://httpbin.org/post', data=data)
         self.assertEqual(r['json'], data)
 
+class HttpErrorTest(unittest.TestCase):
+    def http_error_400(self):
+        simplehttp.get_json('https://httpbin.org/status/400')
+        self.assertEqual(sys.last_value.status_code, 400)
+
 if __name__ == '__main__':
     unittest.main()

@@ -131,7 +131,6 @@
 2. 編輯 `test_simplehttp.py` 。
    ```python
    import unittest
-   import sys
    sys.path.append('..')
    import simplehttp
 
@@ -288,4 +287,13 @@
        except urlrequest.HTTPError as e:
            raise
        return info
+   ```
+6. 新增一項 TestCase 至 `tests/test_simplehttp.py`。
+   ```python
+   import sys
+   ...
+   class HttpErrorTest(unittest.TestCase):
+       def http_error_400(self):
+           simplehttp.get_json('https://httpbin.org/status/400')
+           self.assertEqual(sys.last_value.status_code, 400)
    ```
