@@ -1,5 +1,3 @@
-#/usr/bin/env python
-# -*- coding: UTF-8 -*-
 import sys
 import json
 try:
@@ -30,6 +28,20 @@ class HttpError(Exception):
         return 'HTTP Status Code: %s' % self.status_code
 
 def get_json(url, **args):
+    '''
+    To get url's response by GET method.
+
+    Args:
+        url (string): The target url.
+        **args:
+            params (dict): The parameters of GET method.
+
+    Returns:
+        info (dict): Convert url's response to dict.
+
+    Raises:
+        HttpError: Can't open url.
+    '''
     if args.setdefault('params', {}):
         args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
         url += '&' if '?' in url else '?'
@@ -43,6 +55,21 @@ def get_json(url, **args):
     return info
 
 def post_json(url, **args):
+    '''
+    To get url's response by POST method.
+
+    Args:
+        url (string): The target url.
+        **args:
+            params (dict): The parameters of POST method.
+            data (dict): The data of POST method.
+
+    Returns:
+        info (dict): Convert url's response to dict.
+
+    Raises:
+        HttpError: Can't open url.
+    '''
     if args.setdefault('params', {}):
         args['params'] = {k: v.encode('utf-8') for k, v in args['params'].items()}
         url += '&' if '?' in url else '?'
