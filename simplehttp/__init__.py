@@ -23,11 +23,11 @@ else:
     ''')
 
 class HttpError(Exception):
-    def __init__(self, code):
-        self.code = code
+    def __init__(self, status_code):
+        self.status_code = status_code
 
     def __str__(self):
-        return 'HTTP Status Code: %s' % self.code
+        return 'HTTP Status Code: %s' % self.status_code
 
 def get_json(url, **args):
     if args.setdefault('params', {}):
