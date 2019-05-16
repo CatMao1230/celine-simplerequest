@@ -1,4 +1,3 @@
-#/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import unittest
 import sys
@@ -52,11 +51,6 @@ class HttpErrorTest(unittest.TestCase):
             simplehttp.get_json('https://httpbin.org/status/400')
         except Exception as err:
             self.assertEqual(type(err), simplehttp.HttpError)
-            self.assertEqual(err.status_code, 400)
+            self.assertEqual(sys.exc_info()[1].status_code, 400)
         else:
             self.fail('HttpError not raised.')
-        finally:
-            self.assertEqual(sys.exc_info()[1].status_code, 400)
-
-if __name__ == '__main__':
-    unittest.main()
